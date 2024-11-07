@@ -1,6 +1,8 @@
+// ! JavaScript for Clonify
+// Made and maintained by github.com/Arpan-Saha-25
 console.log("Welcome to Clonify");
 
-// Initialize the Variables
+// * Initialize the Variables
 let songIndex = 0;
 
 let audioElement = new Audio('songs/1.mp3');
@@ -28,13 +30,13 @@ let songs = [
     { songName: "springs! - Magnetic  Pluggnb", filePath: "songs/10.mp3", coverPath: "covers/10.jpg" }
 ];
 
-// Set song cover images and titles
+// * Set song cover images and titles
 songItems.forEach((element, i) => {
     element.getElementsByTagName("img")[0].src = songs[i].coverPath;
     element.getElementsByClassName("songName")[0].innerText = songs[i].songName;
 });
 
-// Update play/pause listeners after elements are created
+// * Update play/pause listeners after elements are created
 const updatePlayPauseListeners = () => {
     Array.from(document.getElementsByClassName('songitemPlay')).forEach((element) => {
         element.addEventListener('click', (e) => {
@@ -49,11 +51,12 @@ const updatePlayPauseListeners = () => {
             gif.style.opacity = 1;
             masterPlay.classList.remove('fa-circle-play');
             masterPlay.classList.add('fa-circle-pause');
+            updateSongItemPlayIcon();
         });
     });
 };
 
-// Add song durations and play icons
+// * Add song durations and play icons
 let timestamps = Array.from(document.getElementsByClassName("timestamp"));
 timestamps.forEach((element, i) => {
     let audioNewElement = new Audio(songs[i].filePath);
@@ -68,32 +71,66 @@ timestamps.forEach((element, i) => {
     });
 });
 
-// Handle master play/pause
+// * Handle master play/pause
 masterPlay.addEventListener('click', () => {
     if (audioElement.paused || audioElement.currentTime <= 0) {
         audioElement.play();
         masterPlay.classList.remove('fa-circle-play');
         masterPlay.classList.add('fa-circle-pause');
         gif.style.opacity = 1;
+        updateSongItemPlayIcon();
     } else {
         audioElement.pause();
         masterPlay.classList.remove('fa-circle-pause');
         masterPlay.classList.add('fa-circle-play');
         gif.style.opacity = 0;
+        updateSongItemPlayIcon();
     }
 });
 
-// Update progress bar and seek functionality
+// * Update progress bar and seek functionality
 audioElement.addEventListener("timeupdate", () => {
     let progress = parseInt((audioElement.currentTime / audioElement.duration) * 100);
     myProgressBar.value = progress;
 });
 
-myProgressBar.addEventListener('change', () => {
-    audioElement.currentTime = (myProgressBar.value * audioElement.duration) / 100;
+myProgressBar.addEventListener('click', (e) => {
+    const clickPosition = e.offsetX; // Get the click position relative to the progress bar
+    const progressBarWidth = myProgressBar.clientWidth; // Get the full width of the progress bar
+
+    const clickedValue = (clickPosition / progressBarWidth) * 100; // Calculate the percentage clicked
+    audioElement.currentTime = (clickedValue * audioElement.duration) / 100; // Update the song's current time
 });
 
-// Reset all play icons to play state
+// * Change song automatically at the end
+audioElement.addEventListener('ended', () => {
+    songIndex = songIndex >= songs.length - 1 ? 0 : songIndex + 1; // If the index is out of range, it becomes 0 ; else incremented
+    masterSongname.innerText = songs[songIndex].songName;
+    audioElement.src = songs[songIndex].filePath;
+    audioElement.currentTime = 0;
+    audioElement.play();
+    myProgressBar.value = 0; // Reset progress bar to 0
+    masterPlay.classList.remove('fa-circle-play');
+    masterPlay.classList.add('fa-circle-pause');
+    gif.style.opacity = 1;
+    makeAllPlaysPause();
+    updateSongItemPlayIcon();
+});
+
+// * Function to update all songItemPlay icons to the play state
+const updateSongItemPlayIcon = () => {
+    Array.from(document.getElementsByClassName('songitemPlay')).forEach((element, i) => {
+        if (i === songIndex) {
+            element.classList.remove('fa-circle-play');
+            element.classList.add('fa-circle-pause');
+        } else {
+            element.classList.remove('fa-circle-pause');
+            element.classList.add('fa-circle-play');
+        }
+    });
+};
+
+// * Reset all play icons to play state
 const makeAllPlaysPause = () => {
     Array.from(document.getElementsByClassName('songitemPlay')).forEach((element) => {
         element.classList.remove('fa-circle-pause');
@@ -101,7 +138,7 @@ const makeAllPlaysPause = () => {
     });
 };
 
-// Handle next and previous buttons
+// * Handle next and previous buttons
 document.getElementById("next").addEventListener("click", () => {
     songIndex = songIndex >= songs.length - 1 ? 0 : songIndex + 1;
     gif.style.opacity = 1;
@@ -124,14 +161,13 @@ const playSong = () => {
 };
 
 
-// Volume
+// * Volume Adjustments
 const volumeControl = document.getElementById("volume-control");
 const volIcon = document.querySelector(".volume .fa-volume-high");
 
 volumeControl.addEventListener("input", (event) => {
     // Set audio volume
     audioElement.volume = event.target.value;
-    // console.log('audioElement.volume :', audioElement.volume);
 
     // Change icon based on volume level
     if (audioElement.volume <= 0) {
@@ -139,7 +175,7 @@ volumeControl.addEventListener("input", (event) => {
         volIcon.classList.add("fa-volume-xmark");
     } else if (audioElement.volume > 0 && audioElement.volume <= 0.5) {
         volIcon.classList.remove("fa-volume-high", "fa-volume-xmark");
-        volIcon.classList.add("fa-volume-low"); // Optional: you can add a low volume icon here if needed
+        volIcon.classList.add("fa-volume-low");
     } else {
         volIcon.classList.remove("fa-volume-xmark", "fa-volume-low");
         volIcon.classList.add("fa-volume-high");
