@@ -142,12 +142,14 @@ const makeAllPlaysPause = () => {
 document.getElementById("next").addEventListener("click", () => {
     songIndex = songIndex >= songs.length - 1 ? 0 : songIndex + 1;
     gif.style.opacity = 1;
+    updateSongItemPlayIcon();
     playSong();
 });
 
 document.getElementById("previous").addEventListener("click", () => {
     songIndex = songIndex <= 0 ? songs.length - 1 : songIndex - 1;
     gif.style.opacity = 1;
+    updateSongItemPlayIcon();
     playSong();
 });
 
