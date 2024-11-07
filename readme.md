@@ -26,7 +26,7 @@
 ## 🚀 Getting Started
 1. Clone this repository:
     ```bash
-    git clone https://github.com/your-username/clonify.git
+    git clone https://github.com/Arpan-Saha-25/Clonify.git
     ```
 2. Open `index.htm` in your browser to view the player.
 
