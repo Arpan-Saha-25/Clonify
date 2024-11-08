@@ -95,7 +95,7 @@ nav ul li a:hover {
     margin: 1.25rem auto;
     border-radius: 12px;
     padding: 34px;
-    overflow-x: auto;
+    overflow-x: scroll;
 
     /* Background image  */
     background-image: url("assets/bg.png");
@@ -103,17 +103,23 @@ nav ul li a:hover {
     background-size: cover;
 }
 
+.songList {
+    padding-left: 0px;
+    height: 50em;
+}
+
+
 /* for chrome & opera */
 .container::-webkit-scrollbar {
     display: none;
 }
 
 /* for other browser */
+/* IE and Edge */
+/* Firefox */
 .container {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
 }
 
 
